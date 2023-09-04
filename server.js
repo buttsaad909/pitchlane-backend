@@ -49,13 +49,13 @@ app.get('/api/retrieve', (req, res) => {
 
   const videoUrls = [];
  
-  new aws.S3().listObjectsV2({ Bucket: "pitchlane" }, function(err, data) {
+  new aws.S3().listObjectsV2({ Bucket: process.env.AWSBucket }, function(err, data) {
     if (err) {
       console.error("Error listing objects in S3 bucket:", err);
       res.status(500).json({ error: 'Internal server error' });
     } else {
       data.Contents.forEach((object) => {
-        const videoUrl = `https://pitchlane.s3.amazonaws.com/${object.Key}`;
+        const videoUrl = `https://${process.env.AWSBucket}.s3.amazonaws.com/${object.Key}`;
         videoUrls.push(videoUrl);
       });
 
