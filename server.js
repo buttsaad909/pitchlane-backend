@@ -11,6 +11,8 @@ const app = express();
 
 app.use(cors());
 
+console.log(process.env)
+
 aws.config.update({
   accessKeyId: "AKIAROSQOUGIJURQ6P5G",
   secretAccessKey: "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",
