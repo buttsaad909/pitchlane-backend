@@ -11,20 +11,18 @@ const app = express();
 
 app.use(cors());
 
-console.log(process.env)
-
 aws.config.update({
-  accessKeyId: "AKIAROSQOUGIJURQ6P5G",
-  secretAccessKey: "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",
-  region: "eu-west-2" 
-});
+  accessKeyId: process.env.AWSAccessKeyId,
+  secretAccessKey: process.env.AWSSecretKey,
+  region: process.env.AWSRegion
+})
 
 const s3 = new aws.S3();
 
 const upload = multer({
   storage: multerS3({
     s3: s3,
-    bucket: "pitchlane",
+    bucket: process.env.AWSBucket,
     metadata: function (req, file, cb) {
       cb(null, { fieldName: file.fieldname });
     },
@@ -50,14 +48,14 @@ app.get('/api/retrieve', (req, res) => {
   console.log("Retrieving all video URLs");
 
   const videoUrls = [];
-  
-  new aws.S3().listObjectsV2({ Bucket: "pitchlane" }, function(err, data) {
+ 
+  new aws.S3().listObjectsV2({ Bucket: process.env.AWSBucket }, function(err, data) {
     if (err) {
       console.error("Error listing objects in S3 bucket:", err);
       res.status(500).json({ error: 'Internal server error' });
     } else {
       data.Contents.forEach((object) => {
-        const videoUrl = `https://pitchlane.s3.amazonaws.com/${object.Key}`;
+        const videoUrl = `https://${process.env.AWSBucket}.s3.amazonaws.com/${object.Key}`;
         videoUrls.push(videoUrl);
       });
 
